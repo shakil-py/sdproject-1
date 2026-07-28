@@ -24,8 +24,12 @@ typedef struct {
     float cost;
 } TestBill;
 
-// Helper function
+// Global Doctors Array Declaration
+extern const char *DOCTORS[5];
+
+// Helper functions
 void clearBuffer(void);
+void displayDoctors(void);
 
 // Module Functions
 void admitPatient(void);

@@ -30,9 +30,19 @@ void admitPatient(void) {
     fgets(p.disease, sizeof(p.disease), stdin);
     p.disease[strcspn(p.disease, "\n")] = 0;
 
-    printf("Enter Assigned Doctor: ");
-    fgets(p.assigned_doctor, sizeof(p.assigned_doctor), stdin);
-    p.assigned_doctor[strcspn(p.assigned_doctor, "\n")] = 0;
+    // Inside module1_admit.c — replaces manual doctor text input:
+
+displayDoctors();
+int doc_choice = 0;
+printf("Select Assigned Doctor Serial (1-5): ");
+scanf("%d", &doc_choice);
+clearBuffer();
+
+if (doc_choice >= 1 && doc_choice <= 5) {
+    strcpy(p.assigned_doctor, DOCTORS[doc_choice - 1]);
+} else {
+    strcpy(p.assigned_doctor, "Dr. Kamrul Hasan (General Medicine)"); // Default fallback
+}
 
     printf("Enter Room Number: ");
     scanf("%d", &p.room_no);
