@@ -12,7 +12,7 @@ void admitPatient(void) {
     
     printf("Enter Patient ID: ");
     scanf("%d", &p.id);
-    clearBuffer();
+    
 
     printf("Enter Patient Name: ");
     fgets(p.name, sizeof(p.name), stdin);
@@ -20,7 +20,7 @@ void admitPatient(void) {
 
     printf("Enter Age: ");
     scanf("%d", &p.age);
-    clearBuffer();
+    
 
     printf("Enter Gender: ");
     fgets(p.gender, sizeof(p.gender), stdin);
@@ -36,7 +36,6 @@ displayDoctors();
 int doc_choice = 0;
 printf("Select Assigned Doctor Serial (1-5): ");
 scanf("%d", &doc_choice);
-clearBuffer();
 
 if (doc_choice >= 1 && doc_choice <= 5) {
     strcpy(p.assigned_doctor, DOCTORS[doc_choice - 1]);
