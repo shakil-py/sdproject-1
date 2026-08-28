@@ -5,7 +5,15 @@
 #include <stdlib.h>
 #include <string.h>
 
-// Data Structures
+// Doctor Structure (নাম ও রুম নম্বর)
+typedef struct {
+    int id;
+    char name[50];
+    char specialty[30];
+    int room_no; // ডাক্তারের চেম্বার নম্বর
+} Doctor;
+
+// Patient Structure
 typedef struct {
     int id;
     char name[50];
@@ -13,9 +21,10 @@ typedef struct {
     char gender[10];
     char disease[50];
     char assigned_doctor[50];
-    int room_no;
+    int doctor_room_no; // ডাক্তারের চেম্বার
+    int hospital_room_no; // ভর্তি হলে ওয়ার্ডের রুম নম্বর
     float total_bill;
-    int is_admitted; // 1 = Admitted, 0 = Discharged
+    int status; // 0 = Serial Taken, 1 = Admitted, 2 = Discharged
 } Patient;
 
 typedef struct {
@@ -24,17 +33,17 @@ typedef struct {
     float cost;
 } TestBill;
 
-// Global Doctors Array Declaration
-extern const char *DOCTORS[5];
+// Global Doctors Array
+extern Doctor DOCTORS[5];
 
-// Helper functions
+// Helper Functions
 void clearBuffer(void);
 void displayDoctors(void);
 
 // Module Functions
-void admitPatient(void);
-void doctorCheckup(void);
-void addTestBill(void);
-void dischargePatient(void);
+void takeDoctorSerial(void);   // Module 1: সিরিয়াল নেওয়া
+void doctorCheckup(void);       // Module 2: চেকআপ ও অ্যাডমিট করা
+void addTestBill(void);         // Module 3: টেস্ট বিল
+void dischargePatient(void);    // Module 4: ডিসচার্জ
 
 #endif

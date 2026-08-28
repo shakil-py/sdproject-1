@@ -1,86 +1,90 @@
 #include "hospital.h"
 
-// 5 Fixed Doctors in the hospital
-const char *DOCTORS[5] = {
-    "Dr. Rahim Ahmed (Cardiology)",
-    "Dr. Nusrat Jahan (Neurology)",
-    "Dr. Tanvir Hossain (Orthopedics)",
-    "Dr. Farhana Islam (Pediatrics)",
-    "Dr. Kamrul Hasan (General Medicine)"
+// 5 Fixed Doctors Info with Room Numbers
+Doctor DOCTORS[5] = {
+    {1, "Dr. Rahim Ahmed (Cardiology)", "Cardiology", 101},
+    {2, "Dr. Nusrat Jahan (Neurology)", "Neurology", 102},
+    {3, "Dr. Tanvir Hossain (Orthopedics)", "Orthopedics", 201},
+    {4, "Dr. Farhana Islam (Pediatrics)", "Pediatrics", 202},
+    {5, "Dr. Kamrul Hasan (General Medicine)", "General Medicine", 301}
 };
 
-// Helper to display the list of 5 doctors
 void displayDoctors(void) {
-    printf("\n--- Available Doctors List ---\n");
+    printf("\n--- Available Doctors & Chambers ---\n");
     for (int i = 0; i < 5; i++) {
-        printf(" [%d] %s\n", i + 1, DOCTORS[i]);
+        printf(" [%d] %-38s -> Room No: %d\n", i + 1, DOCTORS[i].name, DOCTORS[i].room_no);
     }
-    printf("------------------------------\n");
+    printf("------------------------------------\n");
 }
 
 void doctorCheckup(void) {
     FILE *fp = fopen("patients.dat", "rb+");
     if (fp == NULL) {
-        printf("\n[Error] No patient records found (patients.dat does not exist).\n");
+        printf("\n[Error] No patient records found.\n");
         return;
     }
 
     int search_id, found = 0;
     Patient p;
 
-    printf("\n--- Module 2: Doctor Checkup ---\n");
-    printf("Enter Patient ID for Checkup: ");
+    printf("\n=========================================\n");
+    printf("        MODULE 2: DOCTOR CHECKUP         \n");
+    printf("=========================================\n");
+    printf("Enter Patient ID / Serial: ");
     if (scanf("%d", &search_id) != 1) {
         clearBuffer();
-        printf("Invalid ID input!\n");
+        printf("Invalid Input!\n");
         fclose(fp);
         return;
     }
     clearBuffer();
 
     while (fread(&p, sizeof(Patient), 1, fp) == 1) {
-        if (p.id == search_id && p.is_admitted == 1) {
+        // Patient can be in Serial (0) or already Admitted (1)
+        if (p.id == search_id && (p.status == 0 || p.status == 1)) {
             found = 1;
-            printf("\n=========================================\n");
-            printf("            PATIENT DETAILS              \n");
-            printf("=========================================\n");
-            printf(" ID              : %d\n", p.id);
-            printf(" Name            : %s\n", p.name);
-            printf(" Current Doctor  : %s\n", strlen(p.assigned_doctor) > 0 ? p.assigned_doctor : "None");
-            printf(" Current Disease : %s\n", p.disease);
-            printf("-----------------------------------------\n");
+            printf("\n--- PATIENT INFORMATION ---\n");
+            printf(" Name            : %s (Age: %d)\n", p.name, p.age);
+            printf(" Doctor          : %s\n", p.assigned_doctor);
+            printf(" Doctor Chamber  : Room %d\n", p.doctor_room_no);
+            printf(" Initial Problem : %s\n", p.disease);
+            printf(" Current Status  : %s\n", p.status == 1 ? "Admitted" : "Not Admitted (Serial Taken)");
+            printf("----------------------------\n");
 
-            // 1. Select Doctor from Serial 1-5
-            displayDoctors();
-            int doc_choice = 0;
-            printf("Select Doctor Serial (1-5) or 0 to keep current: ");
-            scanf("%d", &doc_choice);
-            clearBuffer();
-
-            if (doc_choice >= 1 && doc_choice <= 5) {
-                strcpy(p.assigned_doctor, DOCTORS[doc_choice - 1]);
-            } else if (doc_choice != 0) {
-                printf("[Warning] Invalid selection! Keeping previous doctor.\n");
-            }
-
-            // 2. Update Diagnosis
-            printf("\nEnter Updated Diagnosis / Checkup Notes: ");
+            // 1. Update Prescription / Diagnosis
+            printf("Enter Updated Diagnosis / Doctor Notes: ");
             fgets(p.disease, sizeof(p.disease), stdin);
             p.disease[strcspn(p.disease, "\n")] = 0;
 
-            // Move file pointer back to update record
+            // 2. Recommend Hospital Admission
+            if (p.status == 0) {
+                char admit_choice;
+                printf("\nDoes this patient need Hospital Admission? (y/n): ");
+                scanf(" %c", &admit_choice);
+                clearBuffer();
+
+                if (admit_choice == 'y' || admit_choice == 'Y') {
+                    p.status = 1; // Mark as Admitted
+                    printf("Enter Hospital Bed/Room Number to assign: ");
+                    scanf("%d", &p.hospital_room_no);
+                    clearBuffer();
+                    printf("\n[ALERT] Patient %s has been ADMITTED to Hospital Room %d!\n", p.name, p.hospital_room_no);
+                } else {
+                    printf("\n[INFO] Patient checkup done. Prescribed regular medicine (No Admission required).\n");
+                }
+            }
+
+            // Write back to file
             fseek(fp, -((long)sizeof(Patient)), SEEK_CUR);
             fwrite(&p, sizeof(Patient), 1, fp);
             
-            printf("\n[Success] Doctor Checkup completed for Patient ID %d!\n", p.id);
-            printf(" Assigned Doctor : %s\n", p.assigned_doctor);
-            printf(" New Diagnosis   : %s\n", p.disease);
+            printf("\n[Success] Checkup record updated successfully!\n");
             break;
         }
     }
 
     if (!found) {
-        printf("\n[Notice] Patient ID %d was either not found or has already been discharged.\n", search_id);
+        printf("\n[Notice] Patient ID %d not found or already discharged.\n", search_id);
     }
 
     fclose(fp);

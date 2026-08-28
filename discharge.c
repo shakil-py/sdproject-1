@@ -3,42 +3,53 @@
 void dischargePatient(void) {
     FILE *fp_patient = fopen("patients.dat", "rb+");
     if (fp_patient == NULL) {
-        printf("No patient records found.\n");
+        printf("\n[Error] No patient records found.\n");
         return;
     }
 
     int search_id, found = 0;
     Patient p;
 
-    printf("\n--- Module 4: Discharge Patient & Final Bill ---\n");
+    printf("\n=========================================\n");
+    printf("   MODULE 4: DISCHARGE & FINAL INVOICE   \n");
+    printf("=========================================\n");
     printf("Enter Patient ID to Discharge: ");
-    scanf("%d", &search_id);
+    if (scanf("%d", &search_id) != 1) {
+        clearBuffer();
+        printf("Invalid input!\n");
+        fclose(fp_patient);
+        return;
+    }
+    clearBuffer();
 
     while (fread(&p, sizeof(Patient), 1, fp_patient) == 1) {
-        if (p.id == search_id && p.is_admitted == 1) {
+        // p.is_admitted == 1 এর পরিবর্তে p.status == 1
+        if (p.id == search_id && p.status == 1) {
             found = 1;
 
             float room_charge = 0.0f;
-            printf("Enter Room / Stay Charges: ");
+            printf("Enter Hospital Stay / Room Charges: ");
             scanf("%f", &room_charge);
 
             p.total_bill += room_charge;
-            p.is_admitted = 0;
+            p.status = 2; // p.is_admitted = 0 এর জায়গায় p.status = 2 (Discharged)
 
             fseek(fp_patient, -((long)sizeof(Patient)), SEEK_CUR);
             fwrite(&p, sizeof(Patient), 1, fp_patient);
 
+            // Print Final Bill Receipt
             printf("\n=========================================\n");
             printf("         FINAL DISCHARGE INVOICE         \n");
             printf("=========================================\n");
-            printf(" Patient ID      : %d\n", p.id);
-            printf(" Name            : %s\n", p.name);
-            printf(" Age / Gender    : %d / %s\n", p.age, p.gender);
-            printf(" Final Diagnosis : %s\n", p.disease);
-            printf(" Doctor          : %s\n", p.assigned_doctor);
-            printf(" Room Number     : %d\n", p.room_no);
+            printf(" Patient ID       : %d\n", p.id);
+            printf(" Name             : %s\n", p.name);
+            printf(" Age / Gender     : %d / %s\n", p.age, p.gender);
+            printf(" Final Diagnosis  : %s\n", p.disease);
+            printf(" Assigned Doctor  : %s\n", p.assigned_doctor);
+            // p.room_no এর জায়গায় p.hospital_room_no
+            printf(" Hospital Room No : Room %d\n", p.hospital_room_no);
             printf("-----------------------------------------\n");
-            printf(" Tests Breakdown:\n");
+            printf(" Charges Breakdown:\n");
 
             FILE *fp_test = fopen("test_bills.dat", "rb");
             if (fp_test != NULL) {
@@ -51,15 +62,15 @@ void dischargePatient(void) {
                     }
                 }
                 if (test_count == 0) {
-                    printf("  (No extra tests recorded)\n");
+                    printf("  (No additional test bills)\n");
                 }
                 fclose(fp_test);
             }
 
-            printf(" Room & Service Charges   : $%.2f\n", room_charge);
+            printf("  - Room & Care Charges      : $%.2f\n", room_charge);
             printf("-----------------------------------------\n");
-            printf(" TOTAL AMOUNT PAYABLE     : $%.2f\n", p.total_bill);
-            printf(" Status                   : DISCHARGED\n");
+            printf(" TOTAL AMOUNT PAYABLE        : $%.2f\n", p.total_bill);
+            printf(" Status                      : DISCHARGED\n");
             printf("=========================================\n");
 
             break;
@@ -67,7 +78,7 @@ void dischargePatient(void) {
     }
 
     if (!found) {
-        printf("Patient ID %d is either invalid or already discharged.\n", search_id);
+        printf("\n[Notice] Patient ID %d is either not found, not admitted, or already discharged.\n", search_id);
     }
 
     fclose(fp_patient);
