@@ -11,7 +11,7 @@ void addTestBill(void) {
     Patient p;
 
     printf("\n=========================================\n");
-    printf("           MODULE 3: TEST BILL           \n");
+    printf("           MODULE : TEST BILL           \n");
     printf("=========================================\n");
     printf("Enter Patient ID: ");
     if (scanf("%d", &search_id) != 1) {
@@ -48,7 +48,7 @@ void addTestBill(void) {
             fseek(fp_patient, -((long)sizeof(Patient)), SEEK_CUR);
             fwrite(&p, sizeof(Patient), 1, fp_patient);
 
-            printf("\n[Success] Added '%s' (Cost: $%.2f) to Patient ID %d. New total bill: $%.2f\n", 
+            printf("\n[Success] Added '%s' (Cost: %.2f Tk) to Patient ID %d. New total bill: %.2f Tk\n", 
                    tb.test_name, tb.cost, p.id, p.total_bill);
             break;
         }

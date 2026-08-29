@@ -27,7 +27,7 @@ void doctorCheckup(void) {
     Patient p;
 
     printf("\n=========================================\n");
-    printf("        MODULE 2: DOCTOR CHECKUP         \n");
+    printf("        MODULE : DOCTOR CHECKUP         \n");
     printf("=========================================\n");
     printf("Enter Admitted Patient ID: ");
     if (scanf("%d", &search_id) != 1) {

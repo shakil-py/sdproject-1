@@ -9,7 +9,7 @@ void admitPatient(void) {
 
     Patient p;
     printf("\n=========================================\n");
-    printf("     MODULE 1: ADMIT NEW PATIENT         \n");
+    printf("     MODULE : ADMIT NEW PATIENT         \n");
     printf("=========================================\n");
     
     printf("Enter Patient ID: ");
