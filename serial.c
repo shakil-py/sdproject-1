@@ -1,7 +1,7 @@
 #include "hospital.h"
 
 void takeDoctorSerial(void) {
-    // মেনু থেকে আসার সময় বাফারে জমে থাকা '\n' ক্লিয়ার করা
+
     clearBuffer(); 
 
     FILE *fp = fopen("serials.dat", "ab");
@@ -12,7 +12,7 @@ void takeDoctorSerial(void) {
 
     DoctorSerial s;
     
-    // অটোমেটিক সিরিয়াল জেনারেট
+    
     FILE *fp_read = fopen("serials.dat", "rb");
     int count = 1;
     if (fp_read != NULL) {
@@ -56,12 +56,12 @@ void takeDoctorSerial(void) {
         s.doctor_room = DOCTORS[4].room_no;
     }
 
-    s.fee = 500.0f; // Consultation Fee
+    s.fee = 500.0f; 
 
     fwrite(&s, sizeof(DoctorSerial), 1, fp);
     fclose(fp);
 
-    // SLIP PRINTING
+    
     printf("\n");
     printf("*****************************************\n");
     printf("        OPD APPOINTMENT SLIP / BILL      \n");

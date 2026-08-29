@@ -23,7 +23,7 @@ void addTestBill(void) {
     clearBuffer();
 
     while (fread(&p, sizeof(Patient), 1, fp_patient) == 1) {
-        // p.is_admitted == 1 এর পরিবর্তে p.status == 1 ব্যবহার করা হয়েছে
+        
         if (p.id == search_id && p.status == 1) {
             found = 1;
 

@@ -23,7 +23,7 @@ void dischargePatient(void) {
     clearBuffer();
 
     while (fread(&p, sizeof(Patient), 1, fp_patient) == 1) {
-        // p.is_admitted == 1 এর পরিবর্তে p.status == 1
+        
         if (p.id == search_id && p.status == 1) {
             found = 1;
 
@@ -32,12 +32,12 @@ void dischargePatient(void) {
             scanf("%f", &room_charge);
 
             p.total_bill += room_charge;
-            p.status = 2; // p.is_admitted = 0 এর জায়গায় p.status = 2 (Discharged)
+            p.status = 2; 
 
             fseek(fp_patient, -((long)sizeof(Patient)), SEEK_CUR);
             fwrite(&p, sizeof(Patient), 1, fp_patient);
 
-            // Print Final Bill Receipt
+            
             printf("\n=========================================\n");
             printf("         FINAL DISCHARGE INVOICE         \n");
             printf("=========================================\n");
@@ -46,7 +46,7 @@ void dischargePatient(void) {
             printf(" Age / Gender     : %d / %s\n", p.age, p.gender);
             printf(" Final Diagnosis  : %s\n", p.disease);
             printf(" Assigned Doctor  : %s\n", p.assigned_doctor);
-            // p.room_no এর জায়গায় p.hospital_room_no
+            
             printf(" Hospital Room No : Room %d\n", p.hospital_room_no);
             printf("-----------------------------------------\n");
             printf(" Charges Breakdown:\n");
@@ -57,7 +57,7 @@ void dischargePatient(void) {
                 int test_count = 0;
                 while (fread(&tb, sizeof(TestBill), 1, fp_test) == 1) {
                     if (tb.patient_id == p.id) {
-                        printf("  - %-25s: $%.2f\n", tb.test_name, tb.cost);
+                        printf("  - %-25s: %.2f\n", tb.test_name, tb.cost);
                         test_count++;
                     }
                 }
@@ -67,9 +67,9 @@ void dischargePatient(void) {
                 fclose(fp_test);
             }
 
-            printf("  - Room & Care Charges      : $%.2f\n", room_charge);
+            printf("  - Room & Care Charges      : %.2f Tk\n", room_charge);
             printf("-----------------------------------------\n");
-            printf(" TOTAL AMOUNT PAYABLE        : $%.2f\n", p.total_bill);
+            printf(" TOTAL AMOUNT PAYABLE        : %.2f Tk\n", p.total_bill);
             printf(" Status                      : DISCHARGED\n");
             printf("=========================================\n");
 
