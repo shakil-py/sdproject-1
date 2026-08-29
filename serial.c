@@ -73,7 +73,7 @@ void takeDoctorSerial(void) {
     printf(" Doctor Name    : %s\n", s.doctor_name);
     printf(" Chamber Room   : ROOM NO #%d\n", s.doctor_room);
     printf("-----------------------------------------\n");
-    printf(" Consultation   : $%.2f (PAID)\n", s.fee);
+    printf(" Consultation   : %.2f Tk (PAID)\n", s.fee);
     printf("*****************************************\n");
     printf(" Please wait outside Chamber Room #%d\n", s.doctor_room);
     printf("*****************************************\n");
